@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Usage Timer</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #timer { font-size: 2rem; }
+        #water-wasted { font-size: 1.5rem; color: red; }
+        .button { margin: 10px; padding: 10px 20px; font-size: 1rem; }
+        #action-options { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Water Usage Timer</h1>
+    <div id="action-options">
+        <label for="action-select">Choose an action:</label>
+        <select id="action-select">
+            <option value="washHands">Wash hands/teeth (7 L/min)</option>
+            <option value="washDishes">Wash dishes (7 L/min)</option>
+            <option value="takeShower">Take a shower (10 L/min)</option>
+        </select>
+    </div>
+    <p id="timer">Time: 0s</p>
+    <p id="water-wasted">Water Wasted: 0 liters</p>
+    
+    <button id="start-button" class="button">Start</button>
+    <button id="finish-button" class="button" disabled>Finish</button>
+
+    <script>
+        let timerInterval;
+        let startTime;
+        let flowRate = 0; // Liters per second
+
+        // Update flow rate based on selected action
+        document.getElementById('action-select').addEventListener('change', function() {
+            const action = this.value;
+            switch (action) {
+                case 'washHands':
+                    flowRate = 7 / 60; // 7 liters per minute
+                    break;
+                case 'washDishes':
+                    flowRate = 7 / 60; // 7 liters per minute
+                    break;
+                case 'takeShower':
+                    flowRate = 10 / 60; // 10 liters per minute
+                    break;
+            }
+        });
+
+        function updateTimer() {
+            let currentTime = Date.now();
+            let timeElapsed = (currentTime - startTime) / 1000; // in seconds
+            document.getElementById('timer').innerHTML = `Time: ${timeElapsed.toFixed(1)}s`;
+
+            let waterWasted = (flowRate * timeElapsed).toFixed(2);
+            document.getElementById('water-wasted').innerHTML = `Water Wasted: ${waterWasted} liters`;
+        }
+
+        // Start the timer when the start button is clicked
+        document.getElementById('start-button').onclick = () => {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 100); // Update every 100ms
+            document.getElementById('finish-button').disabled = false;
+            document.getElementById('start-button').disabled = true;
+        };
+
+        // Stop the timer when the finish button is clicked
+        document.getElementById('finish-button').onclick = () => {
+            clearInterval(timerInterval);
+            document.getElementById('finish-button').disabled = true;
+            document.getElementById('start-button').disabled = false;
+        };
+    </script>
+</body>
+</html>
